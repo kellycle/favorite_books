@@ -1,0 +1,23 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+header{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px black solid;
+}
+main{
+    display: flex;
+}
+.view_details{
+    margin-right: 100px;
+    width: 700px;
+}
+.edit_details{
+    margin-right: 100px;
+    width: 700px;
+}
+.message{
+    color: red;
+}

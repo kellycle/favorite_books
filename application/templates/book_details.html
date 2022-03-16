@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorite Books</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/book_details.css'%}">
+</head>
+<body>
+    <header class="m-3">
+        <h1 class="h3 p-2">Welcome, {{this_user.first_name}}!</h1>
+        <div>
+            <a class="p-2" href="/">Home Page </a>
+            <span>|</span>
+            <a class="p-2" href="/logout">Log Out</a>
+        </div>
+
+    </header>
+    <main class="m-3">
+        {% if this_book not in this_user.books_uploaded.all %}
+        <div class="view_details pl-2">
+            <h2 class="h3">{{this_book.title}}</h2>
+            <p class="mt-3">Added by: {{this_book.uploaded_by.first_name}} {{this_book.uploaded_by.last_name}}</p>
+            <p>Added on: {{this_book.created_at}}</p>
+            <p>Last updated on: {{this_book.updated_at}}</p>
+            <p>Description: {{this_book.desc}}</p>
+        </div>
+        <div>
+            <h2 class="h3">Users Who Like This Book:</h2>
+            <ul class="ml-3 mt-3">
+                {% for user in this_book.users_who_like.all %}
+                    <li>{{user.first_name}} {{user.last_name}}</li>
+                {% endfor %}
+            </ul>
+                {% if this_user not in this_book.users_who_like.all %}
+                    <a href="/add_fav/{{this_book.id}}">Add to Favorites</a>
+                {% else %}
+                    <a href="/remove_fav/{{this_book.id}}">Unfavorite</a>
+                {% endif %}
+        </div>
+        {% else %}
+        <div class="pl-2 edit_details">
+            <form action="/process_update/{{this_book.id}}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" name="title" class="form-control form-control-lg" placeholder="Title: {{this_book.title}}">
+                </div>
+                <p>Added by: {{this_book.uploaded_by.first_name}} {{this_book.uploaded_by.last_name}}</p>
+                <p>Added on: {{this_book.created_at}}</p>
+                <p>Last updated on: {{this_book.updated_at}}</p>
+                <div class="form-group">
+                    <textarea name="description" placeholder="Description: {{this_book.desc}}" class="form-control form-control-sm" rows="5"></textarea>
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-dark" type="submit">Update</button>
+                    <a class="btn btn-danger" href="/book/{{this_book.id}}/destroy">Delete</a>
+                </div>
+            </form>
+            <div class="m-3 message">
+                {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                {% endif %}
+            </div>
+        </div>
+        <div>
+            <h2 class="h3">Users Who Like This Book:</h2>
+            <ul class="mt-3 ml-3">
+                {% for user in this_book.users_who_like.all %}
+                    {% if this_user == user %}
+                        <li>{{user.first_name}} {{user.last_name}} | <a href="/remove_fav/{{this_book.id}}">Un-Favorite</a></li>
+                    {% else %}
+                        <li>{{user.first_name}} {{user.last_name}}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </main>
+</body>
+</html>

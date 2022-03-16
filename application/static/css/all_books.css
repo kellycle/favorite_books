@@ -1,0 +1,27 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+header{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px black solid;
+}
+main{
+    display: flex;
+}
+.add_book{
+    width: 300px;
+    margin-left: 10px;
+    margin-right: 100px;
+}
+.book_entry{
+    margin-bottom: 10px;
+}
+.book_list{
+    height: 330px;
+    width: 900px;
+}
+.message{
+    color: red;
+}

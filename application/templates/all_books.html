@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorite Books</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/all_books.css'%}">
+</head>
+<body>
+    <header class="m-3">
+        <h1 class="h3 p-2">Welcome, {{this_user.first_name}}!</h1>
+        <a class="p-2" href="/logout">Log Out</a>
+    </header>
+    <main class="m-3">
+        <div class="add_book">
+            <h2 class="h4 mb-3">Add a Favorite Book</h2>
+            <form action="/process_add" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" name="title" class="form-control form-control-sm" placeholder="Title">
+                </div>
+                <div class="form-group">
+                    <textarea name="description" class="form-control form-control-sm" placeholder="Description" rows="10"></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-dark">Add</button>
+                </div>
+            </form>
+            <div class="m-3 message">
+            {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+            {% endif %}
+            </div>
+        </div>
+        <div>
+            <h2 class="h4 mb-3">All Books</h2>
+            <div class="book_list overflow-auto">
+                {% for book in all_books %}
+                    <div class="book_entry border">
+                        <a class="h4" href="/books/{{book.id}}">{{book.title}}</a>
+                        <p class="m-0">(added by {{ book.uploaded_by.first_name }} {{book.uploaded_by.last_name}})</p>
+                        {% if this_user in book.users_who_like.all %}
+                            <p class="mb-1 font-italic">this is one of your favorites</p>
+                        {% else %}
+                            <a href="/add_fav/{{book.id}}">Add to Favorites</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+    </main>
+</body>
+</html>
